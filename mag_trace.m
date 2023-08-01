@@ -44,7 +44,7 @@ function [maglinen, maglines] = mag_trace(pos,int_field_function,ext_field_funct
 % input.error_check = 1;
 % [maglinen, maglines] = mag_trace_jup(pos, int_field_function, ext_field_function);
 
-% TO-DO: add error checks
+% Created by Martin Brennan along with Chris Lawler and Rob Wilson,  July 2023
 
 
 Defaults.alt       = 400; % (km)
