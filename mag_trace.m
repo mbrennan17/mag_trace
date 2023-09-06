@@ -28,13 +28,17 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 %
 %
 %EXAMPLE 1:
-% pos = [0,5,0; 0 6 0; 0 7 0; 0 8 0; 0 199 0];
+% x = [0;0;0;0;  0];
+% y = [5;6;7;8;199];
+% z = [0;0;0;0;  0];
 % int_field_function = @(x,y,z) (jovian_jrm33_order13_internal_xyz(x,y,z));
 % ext_field_function = @(x,y,z) (con2020_model_xyz('analytic',x,y,z));
-% [maglinen, maglines] = mag_trace(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
+% [maglinen, maglines] = mag_trace(x,y,z, int_field_function, ext_field_function);
 %
 %EXAMPLE 2:
-% pos = [0,5,0; 0 6 0; 0 7 0; 0 8 0; 0 199 0];
+% x = [0;0;0;0;  0];
+% y = [5;6;7;8;199];
+% z = [0;0;0;0;  0];
 % ext_params = con2020_model_xyz('default_values'); % get defaults
 % ext_params.xt__cs_tilt_degs = 0; % change tilt value
 % int_field_function = @(x,y,z) (jovian_jrm33_order13_internal_xyz(x,y,z));
@@ -45,7 +49,7 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 % input.rmax        =  100; % (Rj)
 % input.ext_rmin    =    0; % (Rj)
 % input.error_check =    1;
-% [maglinen, maglines]  = mag_trace(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
+% [maglinen, maglines]  = mag_trace(x,y,z, int_field_function, ext_field_function);
 %
 % Created by Martin Brennan along with Chris Lawler and Rob Wilson,  July 2023
 
@@ -123,8 +127,8 @@ for n = 1:npos
     [~, pos_out1] = ode45(@(s,pos_out) mag_field_evaluate(pos_out, int_field_function, ext_field_function, rmax_sq, ext_rmin_sq), [0 -xprop], pos_in(n,:), opts);
     [~, pos_out2] = ode45(@(s,pos_out) mag_field_evaluate(pos_out, int_field_function, ext_field_function, rmax_sq, ext_rmin_sq), [0  xprop], pos_in(n,:), opts);
     
-    maglinen{n} = pos_out1(n,:);
-    maglines{n} = pos_out2(n,:);
+    maglinen{n} = pos_out1;
+    maglines{n} = pos_out2;
 end
 
 end
