@@ -31,7 +31,7 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 % pos = [0,5,0; 0 6 0; 0 7 0; 0 8 0; 0 199 0];
 % int_field_function = @(x,y,z) (jovian_jrm33_order13_internal_xyz(x,y,z));
 % ext_field_function = @(x,y,z) (con2020_model_xyz('analytic',x,y,z));
-% [maglinen, maglines] = mag_trace_jup(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
+% [maglinen, maglines] = mag_trace(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
 %
 %EXAMPLE 2:
 % pos = [0,5,0; 0 6 0; 0 7 0; 0 8 0; 0 199 0];
@@ -45,7 +45,7 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 % input.rmax        =  100; % (Rj)
 % input.ext_rmin    =    0; % (Rj)
 % input.error_check =    1;
-% [maglinen, maglines]  = mag_trace_jup(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
+% [maglinen, maglines]  = mag_trace(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
 %
 % Created by Martin Brennan along with Chris Lawler and Rob Wilson,  July 2023
 
@@ -86,12 +86,15 @@ if error_check
     if (~isnumeric(x_rj)) || (size(x_rj,2) ~= 1), error('ERROR: x-coordiante variable (x_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
     if (~isnumeric(y_rj)) || (size(y_rj,2) ~= 1), error('ERROR: y-coordiante variable (y_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
     if (~isnumeric(z_rj)) || (size(z_rj,2) ~= 1), error('ERROR: z-coordiante variable (z_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
-
+    
     if (length(x_rj)~=length(y_rj)) && (length(x_rj)~=length(z_rj)), error('ERROR: postion coordinates (x_rj,y_rj,z_rj) must be the same size (n elements)'); end
     
     % Check if internal and external field models exist
-    if (isempty(int_field_function)), error('ERROR: Internal field function not found'); end
-    if (isempty(ext_field_function)), error('ERROR: External field function not found'); end
+    if ~(exist('int_field_function','var'))      , error('ERROR: Internal field function not found'); end
+    if ~(exist('ext_field_function','var'))      , error('ERROR: External field function not found'); end
+    if ~isa(int_field_function,'function_handle'), error('ERROR: Internal field function is not a function handle'); end
+    if ~isa(ext_field_function,'function_handle'), error('ERROR: External field function is not a function handle'); end
+    
     
     % Check optional inputs
     if  (~isnumeric(alt       )) || (numel(alt       )~=1) || (alt<-max(body_radii)), error('ERROR: Altitude optional input (user_params.alt) must be a scalar double number, typically >0, but must be > -Rj'                                ); end
@@ -146,7 +149,7 @@ end
 end
 
 %% Termination at Body
-function [value,isterminal, direction] = terminate_at_body(r, body_radii)
+function [value, isterminal, direction] = terminate_at_body(r, body_radii)
 % Checks if propogation has breached body surface/threshold
 % This will terminate if r = [0, 0, 0] too, as that's in the elipse
 % Ellipsoid equation: inequality checks inner or outer space
