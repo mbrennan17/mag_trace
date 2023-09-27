@@ -87,7 +87,11 @@ end
 
 
 if error_check
-    
+    % MATLAB version check
+    if verLessThan('Matlab', '9.5') %  9.5 = R2018b
+         error('This MATLAB version is too old to use the ode45 routine. Try an upgrade to a MATLAB 2018b or newer.');
+    end
+
     % Check position input
     if (~isnumeric(x_rj)) || (size(x_rj,2) ~= 1), error('ERROR: x-coordiante variable (x_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
     if (~isnumeric(y_rj)) || (size(y_rj,2) ~= 1), error('ERROR: y-coordiante variable (y_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
@@ -107,8 +111,7 @@ if error_check
     if  (~isnumeric(body_radii)) || (numel(body_radii)~=3) || (any(body_radii<=0)  ), error('ERROR: Body radii optional input (user_params.body_radii) must be a 1x3 vector (ie [71492 71492 66854] or [71492 71492 71492])'                  ); end
     if  (~isnumeric(xprop     )) || (numel(xprop     )~=1) || (xprop         <=0   ), error('ERROR: Total propogated distance optional input (user_params.xprop) must be a non-zero positive scalar double number in Rj'                      ); end
     if  (~isnumeric(rmax      )) || (numel(rmax      )~=1) || (rmax          <=0   ), error('ERROR: Max field line radius optional input (user_params.rmax) must be a non-zero positive scalar double number in Rj'                           ); end
-    if  (~isnumeric(ext_rmin  )) || (numel(ext_rmin  )~=1) || (ext_rmin      < 0   ), error('ERROR: Min radius for including external/current-sheet model optional input (user_params.ext_rmin) must be a positive scalar double number in Rj'); end
-    
+    if  (~isnumeric(ext_rmin  )) || (numel(ext_rmin  )~=1) || (ext_rmin      < 0   ), error('ERROR: Min radius for including external/current-sheet model optional input (user_params.ext_rmin) must be a positive scalar double number in Rj'); end 
 end
 
 npos = length(x_rj); % number of positions
@@ -117,7 +120,7 @@ ext_rmin_sq = ext_rmin * ext_rmin;
 
 % Manually Adjusted Solver options
 alt_radii = (body_radii + alt) / body_radii(1);
-opts = odeset('RelTol', 1e-6, 'AbsTol', 1e-8,'Vectorized','on','Events', @(t, y) terminate_at_body(y, alt_radii)); % 1e-8 AbsTol = ~1m.
+opts = odeset('RelTol', 1e-6, 'AbsTol', 1e-8,'Vectorized','on','Events', @(s, y) terminate_at_body(y, alt_radii)); % 1e-8 AbsTol = ~1m.
 
 % Initialize output field lines
 maglinen = cell(npos,1);
