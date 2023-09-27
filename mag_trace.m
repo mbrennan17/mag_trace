@@ -14,7 +14,7 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 %           user_params.rmax:  Max radius [1] (Radii) of field line from central body (suggested 200 Rj for Jupiter)
 %           user_params.ext_rmin: Min radius [1] (Radii) for including external/current-sheet component in field line computation 
 %               (ext_rmin = 0 for always use external/current sheet, ext_rmin = rmax+1 for never use external/current sheet)
-
+% 
 %OUTPUTS:
 %       maglinen: {n}(m1, 3) (Radii) northern magnetic field line (of m1 pts) for each n position in cartesian frame
 %       maglines: {n}(m2, 3) (Radii) southern magnetic field line (of m2 pts) for each n position in cartesian frame
@@ -25,14 +25,14 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 %                 magfpn0(n,:) = maglinen{n}(end,:);
 %                 magfps0(n,:) = maglines{n}(end,:);
 %             end
-
-
+% 
+% 
 %EXAMPLE 1:
 % pos = [0,5,0; 0 6 0; 0 7 0; 0 8 0; 0 199 0];
 % int_field_function = @(x,y,z) (jovian_jrm33_order13_internal_xyz(x,y,z));
 % ext_field_function = @(x,y,z) (con2020_model_xyz('analytic',x,y,z));
-% [maglinen, maglines] = mag_trace_jup(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
-
+% [maglinen, maglines] = mag_trace(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
+% 
 %EXAMPLE 2:
 % pos = [0,5,0; 0 6 0; 0 7 0; 0 8 0; 0 199 0];
 % ext_params = con2020_model_xyz('default_values'); % get defaults
@@ -45,17 +45,17 @@ function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_
 % input.rmax      =  100; % (Rj)
 % input.ext_rmin  =    0; % (Rj)
 % input.error_check = 1;
-% [maglinen, maglines]  = mag_trace_jup(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
-
+% [maglinen, maglines]  = mag_trace(pos(:,1),pos(:,2),pos(:,3), int_field_function, ext_field_function);
+% 
 % Created by Martin Brennan along with Chris Lawler and Rob Wilson,  July 2023
 
 switch numel(varargin)
     case 0
-        Defaults.alt       = 400; % (km)
-        Defaults.body_radii = [71492 71492 66854]; % (km) % size 1x3
-        Defaults.xprop     = 1000;% (Rj)
-        Defaults.rmax      =  200; % (Rj)
-        Defaults.ext_rmin  =    0; % (Rj)
+        Defaults.alt         = 400; % (km)
+        Defaults.body_radii  = [71492 71492 66854]; % (km) % size 1x3
+        Defaults.xprop       = 1000;% (Rj)
+        Defaults.rmax        =  200; % (Rj)
+        Defaults.ext_rmin    =    0; % (Rj)
         Defaults.error_check = 1;
 
         alt = Defaults.alt ;
@@ -70,7 +70,7 @@ switch numel(varargin)
             error('Must be a structure of terms to use in code')
         end
         alt         = double(user_params.alt);
-        body_radii   = double(user_params.body_radii);
+        body_radii  = double(user_params.body_radii);
         xprop       = double(user_params.xprop);
         rmax        = double(user_params.rmax);
         ext_rmin    = double(user_params.ext_rmin);
@@ -119,8 +119,8 @@ for n = 1:npos
     [~, pos_out1] = ode45(@(s,pos_out) mag_field_evaluate(pos_out, int_field_function, ext_field_function, rmax_sq, ext_rmin_sq), [0 -xprop], pos_in(n,:), opts);
     [~, pos_out2] = ode45(@(s,pos_out) mag_field_evaluate(pos_out, int_field_function, ext_field_function, rmax_sq, ext_rmin_sq), [0  xprop], pos_in(n,:), opts);
 
-    maglinen{n} = pos_out1(n,:);
-    maglines{n} = pos_out2(n,:);
+    maglinen{n} = pos_out1;
+    maglines{n} = pos_out2;
 
 end
 
