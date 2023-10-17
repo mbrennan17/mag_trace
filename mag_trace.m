@@ -1,18 +1,19 @@
-function [maglinen, maglines] = mag_trace(x_rj,y_rj,z_rj,int_field_function,ext_field_function,varargin)
+function [maglinen, maglines] = mag_trace(x_req,y_req,z_req,int_field_function,ext_field_function,varargin)
 %INPUTS:
-%     x_rj: Position x-coordinates (n) (Rj) in cartesian frame required by field functions (ie IAU_JUPITER, J2000, etc) from which magnetic field line is traced, n position vectors.
-%     y_rj: Position y-coordinates (n) (Rj) in cartesian frame required by field functions (ie IAU_JUPITER, J2000, etc) from which magnetic field line is traced, n position vectors.
-%     z_rj: Position z-coordinates (n) (Rj) in cartesian frame required by field functions (ie IAU_JUPITER, J2000, etc) from which magnetic field line is traced, n position vectors.
+%     x_req: Position x-coordinates (n) (Req) in cartesian frame required by field functions (ie IAU_JUPITER, J2000, etc) from which magnetic field line is traced, n position vectors.
+%     y_req: Position y-coordinates (n) (Req) in cartesian frame required by field functions (ie IAU_JUPITER, J2000, etc) from which magnetic field line is traced, n position vectors.
+%     z_req: Position z-coordinates (n) (Req) in cartesian frame required by field functions (ie IAU_JUPITER, J2000, etc) from which magnetic field line is traced, n position vectors.
 %     int_field_function: internal field function handle, see example below
 %     ext_field_function: external field function handle, see example below
+%        Note Req is the central body's equatorial radius as unit of measure, such as Rj for Jupiter
 %
 %     Optional Inputs:
 %       Must provide a structure with the following input variables, otherwise default values will be used:
-%           user_params.alt: Altitude [1] (km) of jupiter termination of field lines
+%           user_params.alt: Altitude [1] (km) for termination of field lines
 %           user_params.body_radii: Body radii [1,3] (km), ie Jupiter as [71492 71492 66854] for ellipsoid or [71492 71492 71492] for sphere;
-%           user_params.xprop:  Distance [1] (Radii) of total propogation, (ie Rj for Jupiter)
-%           user_params.rmax:  Max radius [1] (Radii) of field line from central body (suggested 200 Rj for Jupiter)
-%           user_params.ext_rmin: Min radius [1] (Radii) for including external/current-sheet component in field line computation
+%           user_params.xprop:  Distance [1] (Req) of total propogation, (ie Rj for Jupiter)
+%           user_params.rmax:  Max radius [1] (Req) of field line from central body (suggested 200 Rj for Jupiter)
+%           user_params.ext_rmin: Min radius [1] (Req) for including external/current-sheet component in field line computation
 %               (ext_rmin = 0 for always use external/current sheet, ext_rmin = rmax+1 for never use external/current sheet)
 
 %
@@ -93,11 +94,11 @@ if error_check
     end
 
     % Check position input
-    if (~isnumeric(x_rj)) || (size(x_rj,2) ~= 1), error('ERROR: x-coordiante variable (x_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
-    if (~isnumeric(y_rj)) || (size(y_rj,2) ~= 1), error('ERROR: y-coordiante variable (y_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
-    if (~isnumeric(z_rj)) || (size(z_rj,2) ~= 1), error('ERROR: z-coordiante variable (z_rj) must be an n x 1 (n rows, 1 columns) array of numbers'); end
+    if (~isnumeric(x_req)) || (size(x_req,2) ~= 1), error('ERROR: x-coordiante variable (x_req) must be an n x 1 (n rows, 1 columns) array of numbers'); end
+    if (~isnumeric(y_req)) || (size(y_req,2) ~= 1), error('ERROR: y-coordiante variable (y_req) must be an n x 1 (n rows, 1 columns) array of numbers'); end
+    if (~isnumeric(z_req)) || (size(z_req,2) ~= 1), error('ERROR: z-coordiante variable (z_req) must be an n x 1 (n rows, 1 columns) array of numbers'); end
     
-    if (length(x_rj)~=length(y_rj)) && (length(x_rj)~=length(z_rj)), error('ERROR: postion coordinates (x_rj,y_rj,z_rj) must be the same size (n elements)'); end
+    if (length(x_req)~=length(y_req)) && (length(x_req)~=length(z_req)), error('ERROR: postion coordinates (x_req,y_req,z_req) must be the same size (n elements)'); end
     
     % Check if internal and external field models exist
     if ~(exist('int_field_function','var'))      , error('ERROR: Internal field function not found'); end
@@ -107,14 +108,14 @@ if error_check
     
     
     % Check optional inputs
-    if  (~isnumeric(alt       )) || (numel(alt       )~=1) || (alt<-max(body_radii)), error('ERROR: Altitude optional input (user_params.alt) must be a scalar double number, typically >0, but must be > -Rj'                                ); end
-    if  (~isnumeric(body_radii)) || (numel(body_radii)~=3) || (any(body_radii<=0)  ), error('ERROR: Body radii optional input (user_params.body_radii) must be a 1x3 vector (ie [71492 71492 66854] or [71492 71492 71492])'                  ); end
-    if  (~isnumeric(xprop     )) || (numel(xprop     )~=1) || (xprop         <=0   ), error('ERROR: Total propogated distance optional input (user_params.xprop) must be a non-zero positive scalar double number in Rj'                      ); end
-    if  (~isnumeric(rmax      )) || (numel(rmax      )~=1) || (rmax          <=0   ), error('ERROR: Max field line radius optional input (user_params.rmax) must be a non-zero positive scalar double number in Rj'                           ); end
-    if  (~isnumeric(ext_rmin  )) || (numel(ext_rmin  )~=1) || (ext_rmin      < 0   ), error('ERROR: Min radius for including external/current-sheet model optional input (user_params.ext_rmin) must be a positive scalar double number in Rj'); end 
+    if  (~isnumeric(alt       )) || (numel(alt       )~=1) || (alt<-max(body_radii)), error('ERROR: Altitude optional input (user_params.alt) must be a scalar double number, typically >0, but must be > -1 Req (Body-equatorial-radius)'                                ); end
+    if  (~isnumeric(body_radii)) || (numel(body_radii)~=3) || (any(body_radii<=0)  ), error('ERROR: Body-radii optional input (user_params.body_radii) must be a 1x3 vector (ie [71492 71492 66854] or [71492 71492 71492])'                  ); end
+    if  (~isnumeric(xprop     )) || (numel(xprop     )~=1) || (xprop         <=0   ), error('ERROR: Total propogated distance optional input (user_params.xprop) must be a non-zero positive scalar double number in Req (Body-equatorial-radius)'                      ); end
+    if  (~isnumeric(rmax      )) || (numel(rmax      )~=1) || (rmax          <=0   ), error('ERROR: Max field line radius optional input (user_params.rmax) must be a non-zero positive scalar double number in Req (Body-equatorial-radius)'                           ); end
+    if  (~isnumeric(ext_rmin  )) || (numel(ext_rmin  )~=1) || (ext_rmin      < 0   ), error('ERROR: Min radius for including external/current-sheet model optional input (user_params.ext_rmin) must be a positive scalar double number in Req (Body-equatorial-radius)'); end 
 end
 
-npos = length(x_rj); % number of positions
+npos = length(x_req); % number of positions
 rmax_sq     = rmax     * rmax    ;
 ext_rmin_sq = ext_rmin * ext_rmin;
 
@@ -127,7 +128,7 @@ maglinen = cell(npos,1);
 maglines = maglinen;
 
 % Loop through n positions and propogate along both field line directions.
-pos_in = [x_rj, y_rj, z_rj];
+pos_in = [x_req, y_req, z_req];
 for n = 1:npos
     [~, pos_out1] = ode45(@(s,pos_out) mag_field_evaluate(pos_out, int_field_function, ext_field_function, rmax_sq, ext_rmin_sq), [0 -xprop], pos_in(n,:), opts);
     [~, pos_out2] = ode45(@(s,pos_out) mag_field_evaluate(pos_out, int_field_function, ext_field_function, rmax_sq, ext_rmin_sq), [0  xprop], pos_in(n,:), opts);
