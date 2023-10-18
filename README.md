@@ -11,6 +11,9 @@ The vectorized function allows single or multiple input positions. Sets of field
 
 Authors: M. Brennan C. Lawler, and R.J. Wilson
 
+Code Citation DOI: 10.5281/zenodo.10018966 (For all versions.)
+Each version release also has its own DOI, click the link above to get to the DOI of specific versions.
+
 This is part of a community code project: Magnetospheres of the Outer Planets Group Community Code and is formulated to work seamlessly with the Jupiter internal and external magnetic field models as outlined in the January 2023 in Space Science Reviews paper:
 
 Wilson, R.J., Vogt, M.F., Provan, G. et al. Internal and External Jovian Magnetic Fields: Community Code to Serve the Magnetospheres of the Outer Planets Community. Space Sci Rev 219, 15 (2023). https://doi.org/10.1007/s11214-023-00961-3
