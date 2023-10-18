@@ -45,7 +45,6 @@ function [maglinen, maglines] = mag_trace(x_req,y_req,z_req,int_field_function,e
 % ext_params.xt__cs_tilt_degs = 0; % change tilt value
 % int_field_function = @(x,y,z) (jovian_jrm33_order13_internal_xyz(x,y,z));
 % ext_field_function = @(x,y,z) (con2020_model_xyz('hybrid',x,y,z,ext_params));
-
 % input.alt         =  200; % (km)
 % input.body_radii  = [71492 71492 71492]; % (km) % size 1x3
 % input.xprop       =  500; % (Rj)
@@ -53,6 +52,10 @@ function [maglinen, maglines] = mag_trace(x_req,y_req,z_req,int_field_function,e
 % input.ext_rmin    =    0; % (Rj)
 % input.error_check =    1;
 % [maglinen, maglines]  = mag_trace(x,y,z, int_field_function, ext_field_function);
+% for n=1:length(maglinen)
+%     magfpn(n,:) = maglinen{n}(end,:); % North footprint of surface intercept
+%     magfps(n,:) = maglines{n}(end,:); % South footprint of surface intercept
+% end
 
 % Created by Martin Brennan along with Chris Lawler and Rob Wilson,  July 2023
 
