@@ -15,6 +15,7 @@ This is part of a community code project: Magnetospheres of the Outer Planets Gr
 
 Wilson, R.J., Vogt, M.F., Provan, G. et al. Internal and External Jovian Magnetic Fields: Community Code to Serve the Magnetospheres of the Outer Planets Community. Space Sci Rev 219, 15 (2023). https://doi.org/10.1007/s11214-023-00961-3
 
+Also see [Magnetospheres of the Outer Planets Group Community Code](https://lasp.colorado.edu/mop/missions/juno/community-code/) for source code links and other references.
 
 # Examples:
     Example 1 Input:
