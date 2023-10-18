@@ -1,0 +1,38 @@
+# This CITATION.cff file was generated with cffinit.
+# Visit https://bit.ly/cffinit to generate yours today!
+
+cff-version: 1.2.0
+title: 'Planetary Magnetic Field Line Tracer'
+message: >-
+  If you use this software, please cite it using the
+  metadata from this file.
+type: software
+authors:
+  - given-names: M.J.
+    family-names: Brennan
+    email: martin.brennan@jpl.nasa.gov
+    orcid: 'https://orcid.org/0000-0003-0796-4251'
+    affiliation: >-
+      Jet Propulsion Laboratory, California Institute
+      of Technology, Pasadena, CA, USA
+ - given-names: C.R.
+    family-names: Lawler
+    email: christopher.r.lawler@jpl.nasa.gov
+    affiliation: >-
+      Jet Propulsion Laboratory, California Institute
+      of Technology, Pasadena, CA, USA     
+  - given-names: R.J.
+    family-names: Wilson
+    email: rob.wilson@lasp.colorado.edu
+    affiliation: >-
+      Laboratory for Atmospheric and Space Physics,
+      University of Colorado Boulder, Boulder,
+      Colorado, USA
+    orcid: 'https://orcid.org/0000-0001-9276-2368'
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.10018966
+    description: >-
+      This DOI represents all software versions, and
+      will always resolve to the latest one. 
+repository-code: 'https://github.com/mbrennan17/mag_trace/'
